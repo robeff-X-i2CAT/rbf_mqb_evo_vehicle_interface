@@ -157,8 +157,11 @@ void RbfMqbEvoVehicleInterface::gear_cmd_callback(
   const autoware_vehicle_msgs::msg::GearCommand::SharedPtr msg)
 {
   // Gear Req seems to be published without any problem in autoware side
-  vcu_ctrl_cmd_si_builder_.set_gear_req(
-    static_cast<CanMsgBuilder::VcuCtrlCmdSi::GearReq>(msg->command));
+  // PARK is intentionally never requested from the VCU; DRIVE is sent instead.
+  const auto gear = msg->command == autoware_vehicle_msgs::msg::GearCommand::PARK
+                      ? CanMsgBuilder::VcuCtrlCmdSi::GearReq::DRIVE
+                      : static_cast<CanMsgBuilder::VcuCtrlCmdSi::GearReq>(msg->command);
+  vcu_ctrl_cmd_si_builder_.set_gear_req(gear);
   cmd_rate_monitor_.update("gear_cmd", now());
 }
 

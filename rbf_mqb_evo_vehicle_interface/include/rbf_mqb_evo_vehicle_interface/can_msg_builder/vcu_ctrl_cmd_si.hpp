@@ -95,7 +95,8 @@ protected:
       // autonomous mode so it can act on the safe-stop request below.
       tx.SC_Emergency = 1U;
 
-      tx.SC_Gear = static_cast<uint8_t>(GearReq::PARK);
+      // PARK is intentionally never requested from the VCU; stay in DRIVE.
+      tx.SC_Gear = static_cast<uint8_t>(GearReq::DRIVE);
     }
 
     tx.SC_Reserved = 0U;
